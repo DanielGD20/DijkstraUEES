@@ -58,7 +58,7 @@
                                 <button type="submit" class="btn btn-danger btn-fill" id="boton">Realizar la busqueda</button>
                             </form>
                             <br>
-                            <a class="btn btn-danger btn-fill btn-wd" data-toggle="modal" data-target="#modalcito" href="#pablo" onclick="cargar();">
+                            <a class="btn btn-danger btn-fill btn-wd" href="http://localhost/DijkstraUEES/views/nodosInsert.php" target="_blank" onclick="cargar();">
                                 Mostrar el Grafo UEES
                             </a>
                             <br>
@@ -85,19 +85,28 @@
                 </div>
             </div>
         </div>
-        <!-- Mini Modal -->
-        <div class="modal fade modal-primary" id="modalcito" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: -13%;">
-            <div class="modal-dialog">
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="card-title">Grafico de Nodos</h4>
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="modal-body text-center" id="modalMostrar">
+                    <div class="modal-body" id="modalMostrar">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
         </div>
-        <!--  End Modal -->
+
     </div>
 
 
@@ -146,7 +155,7 @@
             }
         }
 
-        xmlhttp.open("GET", "nodosView.php", true);
+        xmlhttp.open("GET", "nodosInsert.php", true);
         xmlhttp.send();
     }
 </script>

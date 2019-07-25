@@ -50,4 +50,37 @@
 <script src="../assets/js/plugins/sigma.js-1.2.1/plugins/sigma.layout.forceAtlas2/worker.js"></script>
 <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
 
+<div id="container">
+    <style>
+        #graph-container {
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            position: absolute;
+            background-color: #455660;
+        }
+
+        .sigma-edge {
+            stroke: #14191C;
+        }
+
+        .sigma-node {
+            fill: green;
+            stroke: #14191C;
+            stroke-width: 2px;
+        }
+
+        .sigma-node:hover {
+            fill: blue;
+        }
+
+        .muted {
+            fill-opacity: 0.1;
+            stroke-opacity: 0.1;
+        }
+    </style>
+    <div id="graph-container"></div>
+</div>
+
 <script src="../assets/js/ejemploNodos.js"></script>

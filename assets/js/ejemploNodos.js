@@ -1,30 +1,35 @@
+/**
+ * This is a basic example of how one could spawn a freestyle svg renderer
+ * to achieve his/her goal through css and jQuery to display fancy graphs
+ * but somewhat less performant.
+ */
 var i,
-  s,
-  N = 10,
-  E = 30,
-  g = {
-    nodes: [],
-    edges: []
-  };
+    s,
+    N = 5,
+    E = 100,
+    g = {
+      nodes: [],
+      edges: []
+    };
 
 // Generate a random graph:
 for (i = 0; i < N; i++)
   g.nodes.push({
-    id: "n" + i,
-    label: "Node " + i,
+    id: 'n' + i,
+    label: 'Node ' + i,
     x: Math.random(),
     y: Math.random(),
-    size: 20,
-    color: "#666"
+    size: Math.random(),
+    color: '#666'
   });
 
 for (i = 0; i < E; i++)
   g.edges.push({
-    id: "e" + i,
-    source: "n" + ((Math.random() * N) | 0),
-    target: "n" + ((Math.random() * N) | 0),
+    id: 'e' + i,
+    source: 'n' + (Math.random() * N | 0),
+    target: 'n' + (Math.random() * N | 0),
     size: Math.random(),
-    color: "#ccc"
+    color: '#ccc'
   });
 
 // Instantiate sigma:
@@ -36,9 +41,9 @@ s = new sigma({
 });
 
 s.addRenderer({
-  id: "main",
-  type: "svg",
-  container: document.getElementById("graph-container"),
+  id: 'main',
+  type: 'svg',
+  container: document.getElementById('graph-container'),
   freeStyle: true
 });
 
@@ -46,26 +51,23 @@ s.refresh();
 
 // Binding silly interactions
 function mute(node) {
-  if (!~node.getAttribute("class").search(/muted/))
-    node.setAttributeNS(null, "class", node.getAttribute("class") + " muted");
+  if (!~node.getAttribute('class').search(/muted/))
+    node.setAttributeNS(null, 'class', node.getAttribute('class') + ' muted');
 }
 
 function unmute(node) {
-  node.setAttributeNS(
-    null,
-    "class",
-    node.getAttribute("class").replace(/(\s|^)muted(\s|$)/g, "$2")
-  );
+  node.setAttributeNS(null, 'class', node.getAttribute('class').replace(/(\s|^)muted(\s|$)/g, '$2'));
 }
 
-$(".sigma-node").click(function() {
+$('.sigma-node').click(function() {
+
   // Muting
-  $(".sigma-node, .sigma-edge").each(function() {
+  $('.sigma-node, .sigma-edge').each(function() {
     mute(this);
   });
 
   // Unmuting neighbors
-  var neighbors = s.graph.neighborhood($(this).attr("data-node-id"));
+  var neighbors = s.graph.neighborhood($(this).attr('data-node-id'));
   neighbors.nodes.forEach(function(node) {
     unmute($('[data-node-id="' + node.id + '"]')[0]);
   });
@@ -75,9 +77,8 @@ $(".sigma-node").click(function() {
   });
 });
 
-s.bind("clickStage", function() {
-  $(".sigma-node, .sigma-edge").each(function() {
+s.bind('clickStage', function() {
+  $('.sigma-node, .sigma-edge').each(function() {
     unmute(this);
   });
 });
-
