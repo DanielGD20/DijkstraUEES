@@ -1,46 +1,52 @@
-/*
-----------------------------------------------------------------
-| El algoritmo comienza con la inicializacion de un grafo que  |
-| Se encargue de ser procesado por la funcion que ejecutara    |
-| el algoritmo de Dijkstra y buscara la ruta mas corta entre   |
-| las diferentes calles de guayaquil.                          |
-----------------------------------------------------------------
-*/
-
 $(document).ready(function() {
-  console.log(dijkstra(problem));
-  graphRandom();
+  let path = require("ngraph.path");
+  let pathFinder = path.aStar(graph); // graph is https://github.com/anvaka/ngraph.graph
+
+  // now we can find a path between two nodes:
+  let fromNodeId = 40;
+  let toNodeId = 42;
+  let foundPath = pathFinder.find(fromNodeId, toNodeId);
+  console.log(foundPath);
+  // foundPath is array of nodes in the graph
+  let inicio = $("#inicio").value;
+  let final = $("#final").value;
+
+  grafo = inicializarGrafo();
+  console.log(dijkstra(grafo));
+
+  const Ruta1 = {
+    A: 5,
+    B: 2
+  };
+
+  const grafo2 = {
+    UEES: { A: 5, B: 2 },
+    A: { C: 4, D: 2 },
+    B: { A: 8, D: 7 },
+    C: { D: 6, metaUEES: 3 },
+    D: { metaUEES: 1 },
+    metaUEES: grafo1
+  };
+
+  console.log(grafo2);
 });
 
-const problem = {
-  start: {
-    A: 6,
-    B: 7
-  },
-  A: {
-    C: 3,
-    D: 2
-  },
-  B: {
-    A: 8,
-    D: 10
-  },
-  C: {
-    D: 5,
-    finish: 8
-  },
-  D: {
-    finish: 2
-  },
-  finish: {}
-};
-
 /*
-----------------------------------------------------------------
-| Esta funcion se encargara de buscar el nodo con el menor     |
-| costo revisando por medio de preguntas los nodos adyacentes  |
-----------------------------------------------------------------
+------------------------------------Funciones------------------------------
 */
+
+const inicializarGrafo = () => {
+  const grafo = {
+    UEES: { A: 5, B: 2 },
+    A: { C: 4, D: 2 },
+    B: { A: 8, D: 7 },
+    C: { D: 6, metaUEES: 3 },
+    D: { metaUEES: 1 },
+    metaUEES: {}
+  };
+
+  return grafo;
+};
 
 const lowestCostNode = (costs, processed) => {
   return Object.keys(costs).reduce((lowest, node) => {
@@ -53,33 +59,18 @@ const lowestCostNode = (costs, processed) => {
   }, null);
 };
 
-/*
-----------------------------------------------------------------
-| La siguiente funcion recibira como dato un grafo que sera    |
-| procesado para que se ejecute el algoritmo y devuelva el     |
-| camino mas corto ademas del precio de la ruta escogida       |
-----------------------------------------------------------------
-*/
-
-// Esta funcion se encarga de devolver el costo minimo del camino y su recorrido
+// function that returns the minimum cost and path to reach metaUEES
 const dijkstra = graph => {
-  // Revisa el menor costo para cada nodo
-  const costs = Object.assign(
-    {
-      finish: Infinity
-    },
-    graph.start
-  );
+  // track lowest cost to reach each node
+  const costs = Object.assign({ metaUEES: Infinity }, graph.UEES);
 
-  // Revisa los nodos para saber direcciones
-  const parents = {
-    finish: null
-  };
-  for (let child in graph.start) {
-    parents[child] = "start";
+  // track paths
+  const parents = { metaUEES: null };
+  for (let child in graph.UEES) {
+    parents[child] = "UEES";
   }
 
-  // Revisa los nodos que ya fueron procesados
+  // track nodes that have already been processed
   const processed = [];
 
   let node = lowestCostNode(costs, processed);
@@ -102,8 +93,8 @@ const dijkstra = graph => {
     node = lowestCostNode(costs, processed);
   }
 
-  let optimalPath = ["finish"];
-  let parent = parents.finish;
+  let optimalPath = ["metaUEES"];
+  let parent = parents.metaUEES;
   while (parent) {
     optimalPath.push(parent);
     parent = parents[parent];
@@ -111,94 +102,9 @@ const dijkstra = graph => {
   optimalPath.reverse();
 
   const results = {
-    distance: costs.finish,
+    distance: costs.metaUEES,
     path: optimalPath
   };
 
   return results;
 };
-
-function graphRandom() {
-  var i,
-    s,
-    N = 10,
-    E = 30,
-    g = {
-      nodes: [],
-      edges: []
-    };
-
-  // Generate a random graph:
-  for (i = 0; i < N; i++)
-    g.nodes.push({
-      id: "n" + i,
-      label: "Node " + i,
-      x: Math.random(),
-      y: Math.random(),
-      size: Math.random(),
-      color: "#666"
-    });
-
-  for (i = 0; i < E; i++)
-    g.edges.push({
-      id: "e" + i,
-      source: "n" + ((Math.random() * N) | 0),
-      target: "n" + ((Math.random() * N) | 0),
-      size: Math.random(),
-      color: "#ccc"
-    });
-
-  // Instantiate sigma:
-  s = new sigma({
-    graph: g,
-    settings: {
-      enableHovering: false
-    }
-  });
-
-  s.addRenderer({
-    id: "main",
-    type: "svg",
-    container: document.getElementById("graph-container"),
-    freeStyle: true
-  });
-
-  s.refresh();
-}
-
-// Binding silly interactions
-function mute(node) {
-  if (!~node.getAttribute("class").search(/muted/))
-    node.setAttributeNS(null, "class", node.getAttribute("class") + " muted");
-}
-
-function unmute(node) {
-  node.setAttributeNS(
-    null,
-    "class",
-    node.getAttribute("class").replace(/(\s|^)muted(\s|$)/g, "$2")
-  );
-}
-
-$(".sigma-node").click(function() {
-  // Muting
-  $(".sigma-node, .sigma-edge").each(function() {
-    mute(this);
-  });
-
-  // Unmuting neighbors
-  var neighbors = s.graph.neighborhood($(this).attr("data-node-id"));
-  neighbors.nodes.forEach(function(node) {
-    unmute($('[data-node-id="' + node.id + '"]')[0]);
-  });
-
-  neighbors.edges.forEach(function(edge) {
-    unmute($('[data-edge-id="' + edge.id + '"]')[0]);
-  });
-});
-
-s.bind("clickStage", function() {
-  $(".sigma-node, .sigma-edge").each(function() {
-    unmute(this);
-  });
-});
